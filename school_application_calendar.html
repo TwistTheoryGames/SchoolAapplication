@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小学校受験出願日程カレンダー</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .calendar-container {
+            padding: 30px;
+        }
+        
+        .month-section {
+            margin-bottom: 40px;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .month-header {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .events-grid {
+            display: grid;
+            gap: 15px;
+            padding: 25px;
+            background: #fafafa;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 6px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        
+        .event-card.recruitment {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        }
+        
+        .event-card.application {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+        
+        .event-card.exam-ticket {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+        
+        .event-card.deadline {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        }
+        
+        .school-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .event-type {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .date-info {
+            font-size: 1.1rem;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .details {
+            font-size: 0.95rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 15px;
+            border: 1px solid #cbd5e1;
+        }
+        
+        .summary h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .summary ul {
+            list-style: none;
+            color: #475569;
+        }
+        
+        .summary li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .summary li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>悠惺・小学校受験出願日程</h1>
+            <p>2025年度入学　受験スケジュール</p>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #10b981;"></div>
+                    <span>募集要項販売</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6;"></div>
+                    <span>出願期間</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f59e0b;"></div>
+                    <span>受験票郵送</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ef4444;"></div>
+                    <span>重要締切</span>
+                </div>
+            </div>
+            
+            <!-- 8月 -->
+            <div class="month-section">
+                <div class="month-header">8月 2025年</div>
+                <div class="events-grid">
+                    <div class="event-card deadline">
+                        <div class="school-name">西武文理小学校</div>
+                        <div class="event-type">重要日程</div>
+                        <div class="date-info">8月18日（月）13:00</div>
+                        <div class="details">詳細要確認</div>
+                    </div>
+                    
+                    <div class="event-card recruitment">
+                        <div class="school-name">慶應義塾横浜初等部</div>
+                        <div class="event-type">募集要項販売</div>
+                        <div class="date-info">8月26日（火）～ 8月28日（木）</div>
+                        <div class="details">場所：横浜初等部<br>時間：9:00～11:00、13:00～15:00</div>
+                    </div>
+                    
+                    <div class="event-card application">
+                        <div class="school-name">慶應義塾横浜初等部</div>
+                        <div class="event-type">出願期間開始</div>
+                        <div class="date-info">8月26日（火）～</div>
+                        <div class="details">インターネット出願専用サイトでの登録開始</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 9月 -->
+            <div class="month-section">
+                <div class="month-header">9月 2025年</div>
+                <div class="events-grid">
+                    <div class="event-card application">
+                        <div class="school-name">暁星小学校</div>
+                        <div class="event-type">情報登録期間</div>
+                        <div class="date-info">9月1日（月）8:00～</div>
+                        <div class="details">～10月2日（火）20:00まで</div>
+                    </div>
+
+                    <div class="event-card application">
+                        <div class="school-name">慶應義塾幼稚舎</div>
+                        <div class="event-type">出願期間開始</div>
+                        <div class="date-info">9月1日（月）～</div>
+                        <div class="details">～9月30日（火）まで</div>
+                    </div>
+                    
+                    <div class="event-card application">
+                        <div class="school-name">早稲田実業初等部</div>
+                        <div class="event-type">出願期間</div>
+                        <div class="date-info">9月1日（月）～ 9月25日（木）</div>
+                        <div class="details">出願締切に注意</div>
+                    </div>
+                    
+                    <div class="event-card recruitment">
+                        <div class="school-name">成蹊小学校</div>
+                        <div class="event-type">募集要項公開</div>
+                        <div class="date-info">9月2日（火）10:00以降</div>
+                        <div class="details">ウェブサイトで確認可能</div>
+                    </div>
+                    
+                    <div class="event-card deadline">
+                        <div class="school-name">慶應義塾横浜初等部</div>
+                        <div class="event-type">出願締切</div>
+                        <div class="date-info">9月25日（木）</div>
+                        <div class="details">インターネット出願締切</div>
+                    </div>
+
+                    <div class="event-card exam-ticket">
+                        <div class="school-name">慶應義塾横浜初等部</div>
+                        <div class="event-type">出願書類の郵送</div>
+                        <div class="date-info">9月24日（水）・9月25日（木）</div>
+                        <div class="details">郵送受付のみ</div>
+                    </div>
+                    
+                    <div class="event-card application">
+                        <div class="school-name">成蹊小学校</div>
+                        <div class="event-type">出願期間</div>
+                        <div class="date-info">9月28日（日）10:00 ～</div>
+                        <div class="details">miraicompassでの出願開始</div>
+                    </div>
+                    
+                    <div class="event-card deadline">
+                        <div class="school-name">慶應義塾幼稚舎</div>
+                        <div class="event-type">出願締切</div>
+                        <div class="date-info">9月30日（火）</div>
+                        <div class="details">出願最終日</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 10月 -->
+            <div class="month-section">
+                <div class="month-header">10月 2025年</div>
+                <div class="events-grid">
+                    <div class="event-card application">
+                        <div class="school-name">暁星小学校</div>
+                        <div class="event-type">出願期間</div>
+                        <div class="date-info">10月1日（月）8:00～</div>
+                        <div class="details">～10月2日（火）20:00まで</div>
+                    </div>
+
+                    <div class="event-card deadline">
+                        <div class="school-name">成蹊小学校</div>
+                        <div class="event-type">出願締切</div>
+                        <div class="date-info">10月1日（水）15:00</div>
+                        <div class="details">miraicompass出願締切</div>
+                    </div>
+                    
+                    <div class="event-card deadline">
+                        <div class="school-name">早稲田実業初等部</div>
+                        <div class="event-type">重要日程</div>
+                        <div class="date-info">10月1日（水）</div>
+                        <div class="details">詳細要確認</div>
+                    </div>
+                    
+                    <div class="event-card application">
+                        <div class="school-name">淑徳小学校</div>
+                        <div class="event-type">出願期間</div>
+                        <div class="date-info">10月6日（月）～ 10月31日（金）</div>
+                        <div class="details">出願期間が長めに設定</div>
+                    </div>
+
+                    <div class="event-card application">
+                        <div class="school-name">暁星小学校</div>
+                        <div class="event-type">受験票出力</div>
+                        <div class="date-info">10月7日（月）13:00～</div>
+                        <div class="details">テーマ作文は10月14日（火）必着</div>
+                    </div>
+                    
+                    <div class="event-card exam-ticket">
+                        <div class="school-name">成蹊小学校</div>
+                        <div class="event-type">受験票郵送</div>
+                        <div class="date-info">10月7日（火）、8日（水）、9日（木）</div>
+                        <div class="details">受験票の到着を確認</div>
+                    </div>
+                    
+                    <div class="event-card deadline">
+                        <div class="school-name">淑徳小学校</div>
+                        <div class="event-type">出願締切</div>
+                        <div class="date-info">10月31日（金）</div>
+                        <div class="details">最終出願日</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary">
+                <h3>📅 重要なポイント</h3>
+                <ul>
+                    <li>8月18日：西武文理小学校の重要日程（詳細要確認）</li>
+                    <li>8月26日：慶應義塾横浜初等部の募集要項販売と出願開始</li>
+                    <li>9月1日：慶應義塾幼稚舎と早稲田実業初等部の出願開始</li>
+                    <li>9月末：多くの学校の出願締切が集中</li>
+                    <li>10月初旬：成蹊小学校の受験票郵送予定</li>
+                    <li>10月末：淑徳小学校の出願締切</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
